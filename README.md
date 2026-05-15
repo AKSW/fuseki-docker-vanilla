@@ -2,6 +2,13 @@
 
 [Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/) is a powerful SPARQL server. This repository provides a Dockerized version of Fuseki, packaged as a vanilla Docker image. Vanilla means that the image contains just the Fuseki server without any customization.
 
+Images are published to [docker.io/aksw/fuseki-vanilla](https://hub.docker.com/repository/docker/aksw/fuseki-vanilla/general)
+
+Pull with:
+```bash
+docker pull aksw/fuseki-vanilla:6.1.0-rc1
+```
+
 ## Features
 
 - Vanilla Apache Jena Fuseki
@@ -19,7 +26,7 @@
 ### Build the Image
 
 ```bash
-docker build --no-cache -t aksw/fuseki-vanilla:6.0.0 .
+docker build --no-cache -t aksw/fuseki-vanilla:6.1.0-rc1 .
 ```
 
 ### Run with Docker Compose
@@ -29,7 +36,7 @@ Create a `docker-compose.yaml` file:
 ```yaml
 services:
   fuseki:
-    image: aksw/fuseki:6.0.0
+    image: aksw/fuseki:6.1.0-rc1
     init: true
     environment:
       - JVM_ARGS=-Xmx4G -XX:ReplayDataFile=/app/fuseki/run/logs/fuseki_replay_pid%p.log -XX:ErrorFile=/app/fuseki/run/logs/fuseki_hs_err_pid%p.log -Dderby.stream.error.file=/app/fuseki/run/logs/fuseki_derby.log
@@ -66,7 +73,7 @@ Data is stored in the `./run` directory (mapped to `/app/fuseki/run` inside the 
 
 Image tag format: `aksw/fuseki-vanilla:<fuseki-version>`
 
-Current version: **6.0.0**
+Current version: **6.1.0-rc1**
 
 ## License
 
