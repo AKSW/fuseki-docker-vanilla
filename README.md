@@ -9,6 +9,8 @@ Pull with:
 docker pull aksw/fuseki-vanilla:6.1.0-rc1
 ```
 
+Check out [aksw/fuseki-docker-plus](https://github.com/AKSW/fuseki-docker-plus/) which extends this image with prebundled plugins and a simple CLI-based plugin manager!
+
 ## Features
 
 - Vanilla Apache Jena Fuseki
