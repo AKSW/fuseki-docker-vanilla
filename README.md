@@ -6,7 +6,7 @@ Images are published to [docker.io/aksw/fuseki-vanilla](https://hub.docker.com/r
 
 Pull with:
 ```bash
-docker pull aksw/fuseki-vanilla:6.1.0-rc1
+docker pull aksw/fuseki-vanilla:6.1.0
 ```
 
 Check out [aksw/fuseki-docker-plus](https://github.com/AKSW/fuseki-docker-plus/) which extends this image with prebundled plugins and a simple CLI-based plugin manager!
@@ -20,15 +20,15 @@ Check out [aksw/fuseki-docker-plus](https://github.com/AKSW/fuseki-docker-plus/)
 
 ## Directory Structure
 
-- `/app/fuseki` — Fuseki installation directory
-- `/app/fuseki/run` — Data and configuration volume
+- `/fuseki` — Fuseki installation directory
+- `/fuseki/run` — Data and configuration volume
 
 ## Quick Start
 
 ### Build the Image
 
 ```bash
-docker build --no-cache -t aksw/fuseki-vanilla:6.1.0-rc1 .
+docker build --no-cache -t aksw/fuseki-vanilla:6.1.0 .
 ```
 
 ### Run with Docker Compose
@@ -38,12 +38,12 @@ Create a `docker-compose.yaml` file:
 ```yaml
 services:
   fuseki:
-    image: aksw/fuseki:6.1.0-rc1
+    image: aksw/fuseki-vanilla:6.1.0
     init: true
     environment:
-      - JVM_ARGS=-Xmx4G -XX:ReplayDataFile=/app/fuseki/run/logs/fuseki_replay_pid%p.log -XX:ErrorFile=/app/fuseki/run/logs/fuseki_hs_err_pid%p.log -Dderby.stream.error.file=/app/fuseki/run/logs/fuseki_derby.log
+      - JVM_ARGS=-Xmx4G -XX:ReplayDataFile=/fuseki/run/logs/fuseki_replay_pid%p.log -XX:ErrorFile=/fuseki/run/logs/fuseki_hs_err_pid%p.log -Dderby.stream.error.file=/fuseki/run/logs/fuseki_derby.log
     volumes:
-      - ./run:/app/fuseki/run
+      - ./run:/fuseki/run
     ports:
       - 3030:3030
       # - 5005:5005
@@ -62,11 +62,11 @@ APP_UID=$(id -u) APP_GID=$(id -g) docker compose up -d
 - **Fuseki UI**: http://localhost:3030
 - **Port 3030**: Main Fuseki HTTP endpoint
 - **Port 5005**: JDWP debug port (disable if not needed)
-- **Config file**: `/app/fuseki/run/config.ttl` (must be present or Fuseki will fail to start)
+- **Config file**: `/fuseki/run/config.ttl` (must be present or Fuseki will fail to start)
 
 ## Persistence
 
-Data is stored in the `./run` directory (mapped to `/app/fuseki/run` inside the container). This includes:
+Data is stored in the `./run` directory (mapped to `/fuseki/run` inside the container). This includes:
 - Datasets and databases
 - Configuration files
 - Log files
@@ -75,8 +75,9 @@ Data is stored in the `./run` directory (mapped to `/app/fuseki/run` inside the 
 
 Image tag format: `aksw/fuseki-vanilla:<fuseki-version>`
 
-Current version: **6.1.0-rc1**
+Current version: **6.1.0**
 
 ## License
 
 This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
+
