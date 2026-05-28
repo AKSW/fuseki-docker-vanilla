@@ -64,6 +64,36 @@ APP_UID=$(id -u) APP_GID=$(id -g) docker compose up -d
 - **Port 5005**: JDWP debug port (disable if not needed)
 - **Config file**: `/fuseki/run/config.ttl` (must be present or Fuseki will fail to start)
 
+## Overriding the Config File
+
+By default, Fuseki uses `/fuseki/run/config.ttl`. You can specify a custom config file by setting the `FUSEKI_CONFIG` environment variable:
+
+```bash
+docker run --rm -it \
+  -v ./custom-config:/fuseki/run \
+  -e FUSEKI_CONFIG=/fuseki/run/custom-config.ttl \
+  aksw/fuseki-vanilla:6.1.0
+```
+
+Or with Docker Compose:
+
+```yaml
+services:
+  fuseki:
+    image: aksw/fuseki-vanilla:6.1.0
+    environment:
+      - FUSEKI_CONFIG=/fuseki/run/custom-config.ttl
+    volumes:
+      - ./custom-config:/fuseki/run
+```
+
+If you want to start fuseki without a `--config` argument, you need to set the entrypoint to `/fuseki/fuseki-server`.
+The default `entrypoint.sh` wrapper always adds a `--config=/path/to/config` argument.
+
+```bash
+docker run --rm -it --entrypoint /fuseki/fuseki-server aksw/fuseki-vanilla:6.1.0 [ARGS]
+```
+
 ## Persistence
 
 Data is stored in the `./run` directory (mapped to `/fuseki/run` inside the container). This includes:
