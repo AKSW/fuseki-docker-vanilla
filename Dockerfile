@@ -10,18 +10,20 @@ ARG FUSEKI_ARCHIVE=${FUSEKI_BASENAME}.tar.gz
 ARG FUSEKI_DOWNLOAD_BASE=https://dlcdn.apache.org/jena/binaries/
 ARG FUSEKI_DOWNLOAD_URL=${FUSEKI_DOWNLOAD_BASE}${FUSEKI_ARCHIVE}
 
-ARG FUSEKI_DOWNLOAD_DIR=/fuseki/downloads
-ARG FUSEKI_BASE=/fuseki
+ARG DOWNLOAD_DIR=/fuseki/downloads
+ARG FUSEKI_HOME=/fuseki
+
+ENV FUSEKI_HOME=${FUSEKI_HOME}
 
 RUN mkdir -p "${DOWNLOAD_DIR}" \
     && curl -C - -L -o "${DOWNLOAD_DIR}/${FUSEKI_ARCHIVE}" "${FUSEKI_DOWNLOAD_URL}" \
-    && tar xf "${DOWNLOAD_DIR}/${FUSEKI_ARCHIVE}" -C "${FUSEKI_BASE}" --strip-components=1 \
+    && tar xf "${DOWNLOAD_DIR}/${FUSEKI_ARCHIVE}" -C "${FUSEKI_HOME}" --strip-components=1 \
     && rm -rf "${DOWNLOAD_DIR}"
 
-WORKDIR /fuseki
-VOLUME /fuseki/run
+WORKDIR ${FUSEKI_HOME}
 
 ENV FUSEKI_BASE=/fuseki/run
+VOLUME /fuseki/run
 
 ENTRYPOINT ["/fuseki/fuseki-server", "--config=/fuseki/run/config.ttl"]
 
