@@ -1,6 +1,6 @@
 # Fuseki Docker
 
-[Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/) is a powerful SPARQL server. This repository provides a Dockerized version of Fuseki, packaged as a vanilla Docker image. Vanilla means that the image contains just the Fuseki server without any customization.
+[Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/) is a powerful SPARQL server. This repository provides a dockerized version of Fuseki, packaged as a vanilla Docker image. Vanilla means that the image contains just the Fuseki server without any customization.
 
 Images are published to [docker.io/aksw/fuseki-vanilla](https://hub.docker.com/repository/docker/aksw/fuseki-vanilla/general)
 
