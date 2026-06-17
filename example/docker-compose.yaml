@@ -1,0 +1,33 @@
+#name: example
+
+services:
+  fuseki:
+    image: aksw/fuseki-vanilla:6.1.0
+    user: "${APP_UID}:${APP_GID}"
+    environment:
+      # Adjust memory usage to your needs!
+      - JVM_ARGS=-Xmx1G -Dderby.stream.error.file=/fuseki/run/logs/fuseki_derby.log --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector
+      - FUSEKI_BASE=/fuseki/run
+    # group_add:
+      # - "${DOCKER_GID}" # Needed for plugins that control other containers, such as the Qlever Fuseki Plugin
+                          # In general, giving a container control over other containers poses a security risk!
+    volumes:
+      - ./run:/fuseki/run
+      - ./resources:/fuseki/run/resources
+      - ./config.ttl:/fuseki/run/config.ttl
+      - ./passwd.txt:/fuseki/run/passwd.txt
+      - ./example.service.ttl:/fuseki/run/configuration/example.service.ttl
+      - /var/run/docker.sock:/var/run/docker.sock
+    # - /.data_nvme/coypu_nvme:/.data_nvme/coypu_nvme
+    # working_dir: /data/coypu
+    ports:
+      - 3030:3030
+      - 5005:5005
+    restart: unless-stopped
+    # network_mode: host
+    # networks:
+    #  - net
+
+#networks:
+#  net:
+
