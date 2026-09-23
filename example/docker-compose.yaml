@@ -12,11 +12,10 @@ services:
     volumes:
       - ./run:/fuseki/run
     command: >
-      sh -c 'cd /fuseki/run &&
-             install -d -o "$$WANT_UID" -g "$$WANT_GID" resources &&
-             install -D -m 0644 -o "$$WANT_UID" -g "$$WANT_GID" /dev/null config.ttl &&
-             install -D -m 0644 -o "$$WANT_UID" -g "$$WANT_GID" /dev/null passwd.txt &&
-             install -D -m 0644 -o "$$WANT_UID" -g "$$WANT_GID" /dev/null configuration/example.service.ttl'
+      sh -c 'install -d -o "$$WANT_UID" -g "$$WANT_GID" /fuseki/run/resources &&
+             install -D -m 0644 -o "$$WANT_UID" -g "$$WANT_GID" /dev/null /fuseki/run/config.ttl &&
+             install -D -m 0644 -o "$$WANT_UID" -g "$$WANT_GID" /dev/null /fuseki/run/passwd.txt &&
+             install -D -m 0644 -o "$$WANT_UID" -g "$$WANT_GID" /dev/null /fuseki/run/configuration/example.service.ttl'
 
   fuseki:
     depends_on:
