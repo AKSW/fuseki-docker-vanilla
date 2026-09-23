@@ -3,7 +3,7 @@ FROM eclipse-temurin:21-jdk-noble
 RUN apt-get update && apt-get install -y --no-install-recommends git nano vim \
     && rm -rf /var/lib/apt/lists/*
 
-ARG FUSEKI_VERSION=6.1.0
+ARG FUSEKI_VERSION=6.2.0
 
 ARG FUSEKI_BASENAME=apache-jena-fuseki-${FUSEKI_VERSION}
 ARG FUSEKI_ARCHIVE=${FUSEKI_BASENAME}.tar.gz
@@ -27,6 +27,7 @@ RUN mkdir -p "${DOWNLOAD_DIR}" \
 WORKDIR ${FUSEKI_HOME}
 VOLUME ${FUSEKI_BASE}
 
+COPY --chmod=755 run-as.sh "${FUSEKI_HOME}/run-as.sh"
 COPY --chmod=755 entrypoint.sh "${FUSEKI_HOME}/entrypoint.sh"
 ENTRYPOINT ["/fuseki/entrypoint.sh"]
 

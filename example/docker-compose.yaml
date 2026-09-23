@@ -2,9 +2,12 @@
 
 services:
   fuseki:
-    image: aksw/fuseki-vanilla:6.1.0
-    user: "${APP_UID}:${APP_GID}"
+    image: aksw/fuseki-vanilla:6.2.0
     environment:
+      # UID:GID the server runs as; the entrypoint chowns /fuseki/run to match on start.
+      # Do NOT also set `user:` here - the entrypoint needs root for the chown phase.
+      - WANT_UID=${WANT_UID:-1000}
+      - WANT_GID=${WANT_GID:-1000}
       # Adjust memory usage to your needs!
       - JVM_ARGS=-Xmx1G -Dderby.stream.error.file=/fuseki/run/logs/fuseki_derby.log --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector
       - FUSEKI_BASE=/fuseki/run

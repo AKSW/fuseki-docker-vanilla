@@ -6,7 +6,7 @@ Images are published to [docker.io/aksw/fuseki-vanilla](https://hub.docker.com/r
 
 Pull with:
 ```bash
-docker pull aksw/fuseki-vanilla:6.1.0
+docker pull aksw/fuseki-vanilla:6.2.0
 ```
 
 Check out [aksw/fuseki-docker-plus](https://github.com/AKSW/fuseki-docker-plus/) which extends this image with prebundled plugins and a simple CLI-based plugin manager!
@@ -16,7 +16,7 @@ Check out [aksw/fuseki-docker-plus](https://github.com/AKSW/fuseki-docker-plus/)
 - Vanilla Apache Jena Fuseki
 - Configurable JVM arguments
 - Data persistence via volumes
-- Runs as non-root user (optional)
+- Runs as a configurable non-root user (`WANT_UID`/`WANT_GID`)
 
 ## Directory Structure
 
@@ -28,7 +28,7 @@ Check out [aksw/fuseki-docker-plus](https://github.com/AKSW/fuseki-docker-plus/)
 ### Build the Image
 
 ```bash
-docker build --no-cache -t aksw/fuseki-vanilla:6.1.0 .
+docker build --no-cache -t aksw/fuseki-vanilla:6.2.0 .
 ```
 
 ### Run with Docker Compose
@@ -38,9 +38,11 @@ Create a `docker-compose.yaml` file:
 ```yaml
 services:
   fuseki:
-    image: aksw/fuseki-vanilla:6.1.0
+    image: aksw/fuseki-vanilla:6.2.0
     init: true
     environment:
+      - WANT_UID=1000
+      - WANT_GID=1000
       - JVM_ARGS=-Xmx4G -XX:ReplayDataFile=/fuseki/run/logs/fuseki_replay_pid%p.log -XX:ErrorFile=/fuseki/run/logs/fuseki_hs_err_pid%p.log -Dderby.stream.error.file=/fuseki/run/logs/fuseki_derby.log
     volumes:
       - ./run:/fuseki/run
@@ -48,14 +50,26 @@ services:
       - 3030:3030
       # - 5005:5005
     restart: unless-stopped
-    user: "${APP_UID}:${APP_GID}"
 ```
 
-Run with current user:
+Run as your current user:
 
 ```bash
-APP_UID=$(id -u) APP_GID=$(id -g) docker compose up -d
+WANT_UID=$(id -u) WANT_GID=$(id -g) docker compose up -d
 ```
+
+## Running as a Non-Root User
+
+The container starts as root, chowns `/fuseki/run` to the requested UID:GID, then drops
+privileges via `setpriv` before starting the server. Set the target user with:
+
+- `WANT_UID` — user ID to run Fuseki as (default: `1000`)
+- `WANT_GID` — group ID to run Fuseki as (default: `1000`)
+
+The UID/GID do not need to exist in the image's `/etc/passwd`.
+
+> **Note:** Do not set `user:` in compose (or `--user` with `docker run`). The entrypoint
+> needs root privileges for the chown phase; setting `user:` would break it.
 
 ## Configuration
 
@@ -72,7 +86,7 @@ By default, Fuseki uses `/fuseki/run/config.ttl`. You can specify a custom confi
 docker run --rm -it \
   -v ./custom-config:/fuseki/run \
   -e FUSEKI_CONFIG=/fuseki/run/custom-config.ttl \
-  aksw/fuseki-vanilla:6.1.0
+  aksw/fuseki-vanilla:6.2.0
 ```
 
 Or with Docker Compose:
@@ -80,7 +94,7 @@ Or with Docker Compose:
 ```yaml
 services:
   fuseki:
-    image: aksw/fuseki-vanilla:6.1.0
+    image: aksw/fuseki-vanilla:6.2.0
     environment:
       - FUSEKI_CONFIG=/fuseki/run/custom-config.ttl
     volumes:
@@ -91,7 +105,7 @@ If you want to start fuseki without a `--config` argument, you need to set the e
 The default `entrypoint.sh` wrapper always adds a `--config=/path/to/config` argument.
 
 ```bash
-docker run --rm -it --entrypoint /fuseki/fuseki-server aksw/fuseki-vanilla:6.1.0 [ARGS]
+docker run --rm -it --entrypoint /fuseki/fuseki-server aksw/fuseki-vanilla:6.2.0 [ARGS]
 ```
 
 ## Persistence
@@ -105,7 +119,7 @@ Data is stored in the `./run` directory (mapped to `/fuseki/run` inside the cont
 
 Image tag format: `aksw/fuseki-vanilla:<fuseki-version>`
 
-Current version: **6.1.0**
+Current version: **6.2.0**
 
 ## License
 
