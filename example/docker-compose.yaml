@@ -1,7 +1,27 @@
 #name: example
 
 services:
+  # The "init-run" service touches the nested bind mounts of the "fuseki" service once.
+  # Without this init run, those files would be owned by root.
+  init-run:
+    image: busybox
+    user: root
+    environment:
+      - WANT_UID=${WANT_UID:-1000}
+      - WANT_GID=${WANT_GID:-1000}
+    volumes:
+      - ./run:/fuseki/run
+    command: >
+      sh -c 'cd /fuseki/run &&
+             install -d -o "$$WANT_UID" -g "$$WANT_GID" resources &&
+             install -D -m 0644 -o "$$WANT_UID" -g "$$WANT_GID" /dev/null config.ttl &&
+             install -D -m 0644 -o "$$WANT_UID" -g "$$WANT_GID" /dev/null passwd.txt &&
+             install -D -m 0644 -o "$$WANT_UID" -g "$$WANT_GID" /dev/null configuration/example.service.ttl'
+
   fuseki:
+    depends_on:
+      init-run:
+        condition: service_completed_successfully
     image: aksw/fuseki-vanilla:6.2.0
     environment:
       # UID:GID the server runs as; the entrypoint chowns /fuseki/run to match on start.
@@ -17,9 +37,9 @@ services:
     volumes:
       - ./run:/fuseki/run
       - ./resources:/fuseki/run/resources
-      - ./config.ttl:/fuseki/run/config.ttl
-      - ./passwd.txt:/fuseki/run/passwd.txt
-      - ./example.service.ttl:/fuseki/run/configuration/example.service.ttl
+      - ./config.ttl:/fuseki/run/config.ttl:ro
+      - ./passwd.txt:/fuseki/run/passwd.txt:ro
+      - ./example.service.ttl:/fuseki/run/configuration/example.service.ttl:ro
       - /var/run/docker.sock:/var/run/docker.sock
     # - /.data_nvme/coypu_nvme:/.data_nvme/coypu_nvme
     # working_dir: /data/coypu

@@ -1,7 +1,7 @@
 Self-contained example.
+By default, runs as user:group "1000:1000".
+For different user/group ids copy `.env.example` to `.env` and adapt.
 
-Use `./dc` wrapper. It forwards all arguments to `docker compose` but also does preflight setup under the current user.
-
-* Start server: `./dc up`
-* Stop server: `./dc down`
+* Start server: `docker compose up`
+* Stop server: `docker compose down`
 
