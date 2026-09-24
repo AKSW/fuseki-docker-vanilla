@@ -1,12 +1,16 @@
 include build.vars
 
-IMAGE_REPO := aksw/fuseki-vanilla
+#IMAGE_REPO := aksw/fuseki-vanilla
 SYNC_FILES := README.md example/docker-compose.yaml
 
-.DEFAULT_GOAL := build
+.DEFAULT_GOAL := help
 .PHONY: sync-version build
 
-sync-version:
+.ONESHELL:
+help: ## Show these help instructions
+	@sed -rn 's/^([^: ]*)[^:]*:[^#]*## (.*)$$/"\1" "\2"/p' $(MAKEFILE_LIST) | xargs printf "make %-15s # %s\n"
+
+sync-version: ## Sync versions in README.md and example/docker-compose.yaml with build.vars
 	@sed -i.bak "s/^ARG FUSEKI_VERSION=.*/ARG FUSEKI_VERSION=$(FUSEKI_VERSION)/" Dockerfile && rm -f Dockerfile.bak
 	@for f in $(SYNC_FILES); do \
 	  sed -i.bak \
@@ -14,7 +18,10 @@ sync-version:
 	    -e "s|^Current \(image \)\?version: .*|Current image version: **$(IMAGE_TAG)** (Fuseki $(FUSEKI_VERSION))|" \
 	    "$$f" && rm -f "$$f.bak"; \
 	done
-	@echo "synced: Dockerfile <- FUSEKI_VERSION=$(FUSEKI_VERSION), docs <- IMAGE_TAG=$(IMAGE_TAG)"
+	@echo "synced: Dockerfile <- FUSEKI_VERSION=$(FUSEKI_VERSION), docs <- IMAGE_TAG=$(IMAGE_TAG)" >&2
 
-build: sync-version
-	docker build --no-cache -t $(IMAGE_REPO):$(IMAGE_TAG) .
+build: ## Build the docker image with versions derived from build.vars
+	@IMAGE="$(IMAGE_REPO):$(IMAGE_TAG)"
+	docker build --no-cache -t "$$IMAGE" .
+	@echo "Built: $$IMAGE" >&2
+
