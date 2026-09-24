@@ -31,7 +31,7 @@ Check out [aksw/fuseki-docker-plus](https://github.com/AKSW/fuseki-docker-plus/)
 make build
 ```
 
-Versions are defined in `build.vars` (the single source of truth): `FUSEKI_VERSION` is synced into the Dockerfile and `IMAGE_TAG` is used as the image tag. `make build` first runs `make sync-version`, which propagates both into this README, `example/docker-compose.yaml`, and the Dockerfile, then builds the image tagged with `IMAGE_TAG`. To bump the version, edit `build.vars` and re-run.
+Versions are defined in `build.vars` (the single source of truth): `FUSEKI_VERSION` is synced into the Dockerfile and `IMAGE_TAG` is used as the image tag. Run `make sync-version` to propagate both into this README, `example/docker-compose.yaml`, and the Dockerfile before building or pushing. To bump the version, edit `build.vars` and re-run.
 
 ### Run with Docker Compose
 

@@ -27,7 +27,7 @@ build: ## Build the docker image with versions derived from build.vars
 
 push: ## Push a previously built image
 	@IMAGE="$(IMAGE_REPO):$(IMAGE_TAG)"
-	@echo "Pushing in 5 seconds: $$IMAGE"
+	@echo "Pushing in 5 seconds: $$IMAGE" >&2
 	@sleep 5 # Change to abort if goal was invoked in mistake
 	docker push "$$IMAGE"
 	@echo "Pushed: $$IMAGE" >&2
