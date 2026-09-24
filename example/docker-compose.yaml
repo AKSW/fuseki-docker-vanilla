@@ -21,7 +21,7 @@ services:
     depends_on:
       init-run:
         condition: service_completed_successfully
-    image: aksw/fuseki-vanilla:6.2.0
+    image: aksw/fuseki-vanilla:6.2.0-2
     environment:
       # UID:GID the server runs as; the entrypoint chowns /fuseki/run to match on start.
       # Do NOT also set `user:` here - the entrypoint needs root for the chown phase.

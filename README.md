@@ -6,7 +6,7 @@ Images are published to [docker.io/aksw/fuseki-vanilla](https://hub.docker.com/r
 
 Pull with:
 ```bash
-docker pull aksw/fuseki-vanilla:6.2.0
+docker pull aksw/fuseki-vanilla:6.2.0-2
 ```
 
 Check out [aksw/fuseki-docker-plus](https://github.com/AKSW/fuseki-docker-plus/) which extends this image with prebundled plugins and a simple CLI-based plugin manager!
@@ -28,8 +28,10 @@ Check out [aksw/fuseki-docker-plus](https://github.com/AKSW/fuseki-docker-plus/)
 ### Build the Image
 
 ```bash
-docker build --no-cache -t aksw/fuseki-vanilla:6.2.0 .
+make build
 ```
+
+Versions are defined in `build.vars` (the single source of truth): `FUSEKI_VERSION` is synced into the Dockerfile and `IMAGE_TAG` is used as the image tag. `make build` first runs `make sync-version`, which propagates both into this README, `example/docker-compose.yaml`, and the Dockerfile, then builds the image tagged with `IMAGE_TAG`. To bump the version, edit `build.vars` and re-run.
 
 ### Run with Docker Compose
 
@@ -38,7 +40,7 @@ Create a `docker-compose.yaml` file:
 ```yaml
 services:
   fuseki:
-    image: aksw/fuseki-vanilla:6.2.0
+    image: aksw/fuseki-vanilla:6.2.0-2
     init: true
     environment:
       - WANT_UID=1000
@@ -86,7 +88,7 @@ By default, Fuseki uses `/fuseki/run/config.ttl`. You can specify a custom confi
 docker run --rm -it \
   -v ./custom-config:/fuseki/run \
   -e FUSEKI_CONFIG=/fuseki/run/custom-config.ttl \
-  aksw/fuseki-vanilla:6.2.0
+  aksw/fuseki-vanilla:6.2.0-2
 ```
 
 Or with Docker Compose:
@@ -94,7 +96,7 @@ Or with Docker Compose:
 ```yaml
 services:
   fuseki:
-    image: aksw/fuseki-vanilla:6.2.0
+    image: aksw/fuseki-vanilla:6.2.0-2
     environment:
       - FUSEKI_CONFIG=/fuseki/run/custom-config.ttl
     volumes:
@@ -105,7 +107,7 @@ If you want to start fuseki without a `--config` argument, you need to set the e
 The default `entrypoint.sh` wrapper always adds a `--config=/path/to/config` argument.
 
 ```bash
-docker run --rm -it --entrypoint /fuseki/fuseki-server aksw/fuseki-vanilla:6.2.0 [ARGS]
+docker run --rm -it --entrypoint /fuseki/fuseki-server aksw/fuseki-vanilla:6.2.0-2 [ARGS]
 ```
 
 ## Persistence
@@ -117,9 +119,16 @@ Data is stored in the `./run` directory (mapped to `/fuseki/run` inside the cont
 
 ## Versioning
 
-Image tag format: `aksw/fuseki-vanilla:<fuseki-version>`
+Image tag format: `aksw/fuseki-vanilla:<fuseki-version>-<build>`
 
-Current version: **6.2.0**
+Versions are defined in `build.vars` (the single source of truth):
+
+- `FUSEKI_VERSION` — Jena Fuseki release, synced into the Dockerfile
+- `IMAGE_TAG` — image tag, e.g. `6.2.0-2`; the `-<build>` suffix is a manual build counter
+
+`make sync-version` propagates both into the Dockerfile, this README, and `example/docker-compose.yaml`.
+
+Current image version: **6.2.0-2** (Fuseki 6.2.0)
 
 ## License
 
