@@ -4,7 +4,7 @@ include build.vars
 SYNC_FILES := README.md example/docker-compose.yaml
 
 .DEFAULT_GOAL := help
-.PHONY: sync-version build
+.PHONY: sync-version build push
 
 .ONESHELL:
 help: ## Show these help instructions
